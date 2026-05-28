@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("Logistic Map Bifurcation Diagram")
+st.title("Logistic Map")
 
 # Sidebar for user configuration
 st.sidebar.header("Parameters")
@@ -38,3 +38,28 @@ if st.button("Generate Diagram"):
         ax.set_title("Bifurcation Diagram of the Logistic Map")
         
         st.pyplot(fig)
+
+st.sidebar.markdown("---")
+st.sidebar.header("Time Series Analysis")
+r_val = st.sidebar.slider("Select r for Time Series", 2.5, 4.0, 3.5)
+n_time_steps = st.sidebar.number_input("Time steps", value=100)
+
+def generate_time_series(r, steps):
+    x = 0.5
+    series = []
+    for _ in range(steps):
+        x = r * x * (1 - x)
+        series.append(x)
+    return series
+
+if st.sidebar.button("Show Time Series"):
+    data = generate_time_series(r_val, n_time_steps)
+    
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(data, marker='o', linestyle='-', markersize=4)
+    ax.set_title(f"Time Series for r = {r_val}")
+    ax.set_xlabel("n")
+    ax.set_ylabel("x_n")
+    ax.grid(True, alpha=0.3)
+    
+    st.pyplot(fig)
