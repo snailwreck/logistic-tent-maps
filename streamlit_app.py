@@ -187,7 +187,7 @@ with tab2:
     # --- SIDEBAR CONFIGURATION (Unique keys added) ---
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Graph")
-    t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_val")
+    t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_gph")
 
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Bifurcation Diagram")
