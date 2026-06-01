@@ -8,7 +8,10 @@ with tab1:
     st.title("Logistic Map")
     st.write("x(n+1) = r * x(n)(1 - x(n))")
 
-    # --- SIDEBAR CONFIGURATION (Moved to top to prevent NameErrors) ---
+    st.sidebar.header("Graph Parameters") 
+    r_gph = st.sidebar.slider("Select r for Graph", 2.5, 4.0, 3.5)
+    
+    st.sidebar.markdown("---")
     st.sidebar.header("Bifurcation Parameters")
     r_min = st.sidebar.slider("Min r", 2.5, 4.0, 2.5)
     r_max = st.sidebar.slider("Max r", 2.5, 4.0, 4.0)
@@ -17,7 +20,7 @@ with tab1:
 
     st.sidebar.markdown("---")
     st.sidebar.header("Time Series Analysis Paramters")
-    r_val = st.sidebar.slider("Select r for System Graph & Time Series", 2.5, 4.0, 3.5)
+    r_val = st.sidebar.slider("Select r for Time Series", 2.5, 4.0, 3.5)
     n_time_steps = st.sidebar.number_input("Time steps", value=100)
 
 
@@ -55,7 +58,7 @@ with tab1:
         return fig
 
     if st.button("Generate Graph"):
-        fig_cobweb = generate_cobweb_plot(r_val, n_time_steps)
+        fig_cobweb = generate_cobweb_plot(r_gph, n_time_steps)
         st.pyplot(fig_cobweb)
 
 
