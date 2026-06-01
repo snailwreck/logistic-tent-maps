@@ -26,8 +26,7 @@ with tab1:
 
     # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
     st.header(f"Dynamical System Plot (r = {r_gph})")
-    st.write("Visualizes the mapping function against the identity line y = x to show state transitions.")
-
+    
     def generate_cobweb_plot(r, steps):
         fig, ax = plt.subplots(figsize=(6, 6))
         x_vals = np.linspace(0, 1, 500)
@@ -187,21 +186,24 @@ with tab2:
 
     # --- SIDEBAR CONFIGURATION (Unique keys added) ---
     st.sidebar.markdown("---")
-    st.sidebar.header("Tent Map: Bifurcation")
+    st.sidebar.header("Tent Map: Graph")
+    t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_val")
+
+    st.sidebar.markdown("---")
+    st.sidebar.header("Tent Map: Bifurcation Diagram")
     t_r_min = st.sidebar.slider("Min r", 0.0, 2.0, 1.0, key="t_r_min")
     t_r_max = st.sidebar.slider("Max r", 0.0, 2.0, 2.0, key="t_r_max")
     t_n_iters = st.sidebar.number_input("Iterations per r", value=1000, key="t_n_iters")
     t_n_discard = st.sidebar.number_input("Discard initial", value=100, key="t_n_discard")
 
     st.sidebar.markdown("---")
-    st.sidebar.header("Tent Map: Single Variable")
-    t_r_val = st.sidebar.slider("Select r for System Graph & Time Series", 0.0, 2.0, 1.5, key="t_r_val")
+    st.sidebar.header("Tent Map: Time Series Analysis")
+    t_r_val = st.sidebar.slider("Select r for the time series", 0.0, 2.0, 1.5, key="t_r_val")
     t_n_steps = st.sidebar.number_input("Time steps", value=100, key="t_n_steps")
 
 
     # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
-    st.header(f"System Graph & Cobweb Plot (r = {t_r_val})")
-    st.write("Visualizes the sharp, linear peak that gives the Tent Map its name.")
+    st.header(f"Dynamical System Plot (r = {t_r_gph})")
 
     def generate_tent_cobweb(r, steps):
         fig, ax = plt.subplots(figsize=(6, 6))
@@ -230,7 +232,7 @@ with tab2:
         ax.grid(True, alpha=0.2)
         return fig
 
-    st.pyplot(generate_tent_cobweb(t_r_val, t_n_steps))
+    st.pyplot(generate_tent_cobweb(t_r_gph, t_n_steps))
 
 
     # --- 2. BIFURCATION DIAGRAM ---
@@ -277,7 +279,7 @@ with tab2:
             series.append(x)
         return series
 
-    if st.sidebar.button("Show Tent Time Series", key="t_btn_ts"):
+    if st.button("Show Tent Time Series", key="t_btn_ts"):
         data = generate_tent_time_series(t_r_val, t_n_steps)
         
         fig, ax = plt.subplots(figsize=(10, 4))
