@@ -56,7 +56,7 @@ with tab1:
         ax.grid(True, alpha=0.2)
         return fig
 
-    if st.button("Generate Graph"):
+    if st.button("Generate Logistic Graph"):
         fig_cobweb = generate_cobweb_plot(r_gph, n_time_steps)
         st.pyplot(fig_cobweb)
 
@@ -80,7 +80,7 @@ with tab1:
                 
         return np.array(r_points).flatten(), np.array(bifurcation_points).flatten()
 
-    if st.button("Generate Diagram"):
+    if st.button("Generate Logistic Diagram"):
         with st.spinner("Calculating..."):
             r_vals, x_vals = generate_bifurcation_data(r_min, r_max, n_iterations, n_discard)
             
@@ -105,7 +105,7 @@ with tab1:
             series.append(x)
         return series
 
-    if st.button("Show Time Series"):
+    if st.button("Show Logistic Time Series"):
         data = generate_time_series(r_val, n_time_steps)
         
         fig, ax = plt.subplots(figsize=(10, 4))
