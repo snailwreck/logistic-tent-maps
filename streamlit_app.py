@@ -120,8 +120,7 @@ with tab1:
 
 # --- 4. FEIGENBAUM CONSTANT ---
     st.markdown("---")
-    st.header("Feigenbaum Constant (delta)")
-    st.write("Calculates the ratio of successive period-doubling bifurcation intervals using a uniform sequence of superstable parameters.")
+    st.header("Feigenbaum Constant")
 
     if st.button("Calculate Feigenbaum Constant"):
         with st.spinner("Calculating superstable parameters..."):
