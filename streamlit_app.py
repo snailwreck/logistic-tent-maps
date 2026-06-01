@@ -16,7 +16,7 @@ with tab1:
     n_discard = st.sidebar.number_input("Discard initial", value=100)
 
     st.sidebar.markdown("---")
-    st.sidebar.header("Single Variable Analysis")
+    st.sidebar.header("Time Series Analysis Paramters")
     r_val = st.sidebar.slider("Select r for System Graph & Time Series", 2.5, 4.0, 3.5)
     n_time_steps = st.sidebar.number_input("Time steps", value=100)
 
@@ -102,7 +102,7 @@ with tab1:
             series.append(x)
         return series
 
-    if st.sidebar.button("Show Time Series"):
+    if st.button("Show Time Series"):
         data = generate_time_series(r_val, n_time_steps)
         
         fig, ax = plt.subplots(figsize=(10, 4))
