@@ -160,7 +160,7 @@ with tab1:
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("**Superstable Parameters (r_n):**")
+                st.markdown("**Period Doublings:**")
                 for i, r_val in enumerate(r_stable):
                     st.write(f"Period {2**i}: **{r_val:.6f}**")
                     
