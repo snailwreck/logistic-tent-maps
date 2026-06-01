@@ -54,7 +54,7 @@ with tab1:
         ax.grid(True, alpha=0.2)
         return fig
 
-    if st.button("Generate Diagram"):
+    if st.button("Generate Graph"):
         fig_cobweb = generate_cobweb_plot(r_val, n_time_steps)
         st.pyplot(fig_cobweb)
 
