@@ -8,18 +8,18 @@ with tab1:
     st.title("Logistic Map")
     st.write("x(n+1) = r * x(n)(1 - x(n))")
 
-    st.sidebar.header("Graph Parameters") 
+    st.sidebar.header("Logistic Map: Graph Parameters") 
     r_gph = st.sidebar.slider("Select r for Graph", 2.5, 4.0, 3.5)
     
     st.sidebar.markdown("---")
-    st.sidebar.header("Bifurcation Parameters")
+    st.sidebar.header("Logistic Map: Bifurcation Parameters")
     r_min = st.sidebar.slider("Min r", 2.5, 4.0, 2.5)
     r_max = st.sidebar.slider("Max r", 2.5, 4.0, 4.0)
     n_iterations = st.sidebar.number_input("Iterations per r", value=1000)
     n_discard = st.sidebar.number_input("Discard initial", value=100)
 
     st.sidebar.markdown("---")
-    st.sidebar.header("Time Series Analysis Paramters")
+    st.sidebar.header("Logistic Map: Time Series Analysis Paramters")
     r_val = st.sidebar.slider("Select r for Time Series", 2.5, 4.0, 3.5)
     n_time_steps = st.sidebar.number_input("Time steps", value=100)
 
@@ -186,18 +186,18 @@ with tab2:
 
     # --- SIDEBAR CONFIGURATION (Unique keys added) ---
     st.sidebar.markdown("---")
-    st.sidebar.header("Tent Map: Graph")
+    st.sidebar.header("Tent Map: Graph Paramters")
     t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_gph")
 
     st.sidebar.markdown("---")
-    st.sidebar.header("Tent Map: Bifurcation Diagram")
+    st.sidebar.header("Tent Map: Bifurcation Paramters")
     t_r_min = st.sidebar.slider("Min r", 0.0, 2.0, 1.0, key="t_r_min")
     t_r_max = st.sidebar.slider("Max r", 0.0, 2.0, 2.0, key="t_r_max")
     t_n_iters = st.sidebar.number_input("Iterations per r", value=1000, key="t_n_iters")
     t_n_discard = st.sidebar.number_input("Discard initial", value=100, key="t_n_discard")
 
     st.sidebar.markdown("---")
-    st.sidebar.header("Tent Map: Time Series Analysis")
+    st.sidebar.header("Tent Map: Time Series Analysis Parameters")
     t_r_val = st.sidebar.slider("Select r for the time series", 0.0, 2.0, 1.5, key="t_r_val")
     t_n_steps = st.sidebar.number_input("Time steps", value=100, key="t_n_steps")
 
@@ -231,8 +231,9 @@ with tab2:
         ax.legend(loc="upper left")
         ax.grid(True, alpha=0.2)
         return fig
-
-    st.pyplot(generate_tent_cobweb(t_r_gph, t_n_steps))
+    
+    if st.button("Generate Tent Graph", key="t_btn_gph"):
+        st.pyplot(generate_tent_cobweb(t_r_gph, t_n_steps))
 
 
     # --- 2. BIFURCATION DIAGRAM ---
