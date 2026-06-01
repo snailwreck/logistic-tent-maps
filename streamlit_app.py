@@ -25,7 +25,7 @@ with tab1:
 
 
     # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
-    st.header(f"Dynamical System Plot (r = {r_val})")
+    st.header(f"Dynamical System Plot (r = {r_gph})")
     st.write("Visualizes the mapping function against the identity line y = x to show state transitions.")
 
     def generate_cobweb_plot(r, steps):
@@ -180,3 +180,111 @@ with tab1:
                     else:
                         delta = numerator / denominator
                         st.write(f"n={i}: **{delta:.6f}**")
+
+with tab2:
+    st.title("Tent Map")
+    st.write("x(n+1) = r * min(x(n), 1 - x(n))")
+
+    # --- SIDEBAR CONFIGURATION (Unique keys added) ---
+    st.sidebar.markdown("---")
+    st.sidebar.header("Tent Map: Bifurcation")
+    t_r_min = st.sidebar.slider("Min r", 0.0, 2.0, 1.0, key="t_r_min")
+    t_r_max = st.sidebar.slider("Max r", 0.0, 2.0, 2.0, key="t_r_max")
+    t_n_iters = st.sidebar.number_input("Iterations per r", value=1000, key="t_n_iters")
+    t_n_discard = st.sidebar.number_input("Discard initial", value=100, key="t_n_discard")
+
+    st.sidebar.markdown("---")
+    st.sidebar.header("Tent Map: Single Variable")
+    t_r_val = st.sidebar.slider("Select r for System Graph & Time Series", 0.0, 2.0, 1.5, key="t_r_val")
+    t_n_steps = st.sidebar.number_input("Time steps", value=100, key="t_n_steps")
+
+
+    # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
+    st.header(f"System Graph & Cobweb Plot (r = {t_r_val})")
+    st.write("Visualizes the sharp, linear peak that gives the Tent Map its name.")
+
+    def generate_tent_cobweb(r, steps):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        x_vals = np.linspace(0, 1, 500)
+        
+        # Tent map function
+        f_x = r * np.minimum(x_vals, 1 - x_vals)
+        
+        ax.plot(x_vals, f_x, 'r', label="f(x) = r * min(x, 1-x)")
+        ax.plot(x_vals, x_vals, 'k--', label="y = x")
+        
+        x_current = 0.33 # Slightly off-center initial condition
+        visual_steps = min(steps, 50) 
+        
+        for _ in range(visual_steps):
+            y_next = r * min(x_current, 1 - x_current)
+            ax.plot([x_current, x_current], [x_current, y_next], 'g', alpha=0.5, lw=1)
+            ax.plot([x_current, y_next], [y_next, y_next], 'g', alpha=0.5, lw=1)
+            x_current = y_next
+            
+        ax.set_xlabel("x_n")
+        ax.set_ylabel("x_(n+1)")
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.legend(loc="upper left")
+        ax.grid(True, alpha=0.2)
+        return fig
+
+    st.pyplot(generate_tent_cobweb(t_r_val, t_n_steps))
+
+
+    # --- 2. BIFURCATION DIAGRAM ---
+    st.markdown("---")
+    st.header("Bifurcation Diagram")
+
+    def generate_tent_bifurcation(r_min, r_max, n_iterations, n_discard):
+        r_values = np.linspace(r_min, r_max, 1000)
+        x = np.random.rand(len(r_values)) # Random init prevents trapping in 0
+        
+        bifurcation_points = []
+        r_points = []
+        
+        for i in range(n_iterations):
+            x = r_values * np.minimum(x, 1 - x)
+            if i >= n_discard:
+                bifurcation_points.append(x)
+                r_points.append(r_values)
+                
+        return np.array(r_points).flatten(), np.array(bifurcation_points).flatten()
+
+    if st.button("Generate Tent Diagram", key="t_btn_bif"):
+        with st.spinner("Calculating..."):
+            r_vals, x_vals = generate_tent_bifurcation(t_r_min, t_r_max, t_n_iters, t_n_discard)
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.plot(r_vals, x_vals, ',k', alpha=0.1)
+            ax.set_xlabel("r")
+            ax.set_ylabel("x")
+            ax.set_title("Bifurcation Diagram of the Tent Map")
+            
+            st.pyplot(fig)
+
+
+    # --- 3. TIME SERIES ANALYSIS ---
+    st.markdown("---")
+    st.header(f"Time Series Analysis (r = {t_r_val})")
+
+    def generate_tent_time_series(r, steps):
+        x = 0.33
+        series = []
+        for _ in range(steps):
+            x = r * min(x, 1 - x)
+            series.append(x)
+        return series
+
+    if st.sidebar.button("Show Tent Time Series", key="t_btn_ts"):
+        data = generate_tent_time_series(t_r_val, t_n_steps)
+        
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(data, marker='o', linestyle='-', markersize=4, color='orange')
+        ax.set_title(f"Tent Map Time Series for r = {t_r_val}")
+        ax.set_xlabel("n")
+        ax.set_ylabel("x_n")
+        ax.grid(True, alpha=0.3)
+        
+        st.pyplot(fig)
