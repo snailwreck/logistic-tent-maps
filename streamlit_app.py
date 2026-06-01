@@ -54,8 +54,9 @@ with tab1:
         ax.grid(True, alpha=0.2)
         return fig
 
-    fig_cobweb = generate_cobweb_plot(r_val, n_time_steps)
-    st.pyplot(fig_cobweb)
+    if st.button("Generate Diagram"):
+        fig_cobweb = generate_cobweb_plot(r_val, n_time_steps)
+        st.pyplot(fig_cobweb)
 
 
     # --- 2. BIFURCATION DIAGRAM ---
