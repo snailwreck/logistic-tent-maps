@@ -120,66 +120,62 @@ with tab1:
 
 # --- 4. FEIGENBAUM CONSTANT ---
     st.markdown("---")
-    st.header("Feigenbaum Constant")
-    st.write("Calculates the ratio of successive period-doubling bifurcation intervals.")
+    st.header("Feigenbaum Constant (delta)")
+    st.write("Calculates the ratio of successive period-doubling bifurcation intervals using a uniform sequence of superstable parameters.")
 
     if st.button("Calculate Feigenbaum Constant"):
-        with st.spinner("Calculating superstable bifurcation parameters..."):
+        with st.spinner("Calculating superstable parameters..."):
             
-            def get_bifurcation_parameter(n_periods, initial_guess, max_iter=20, tol=1e-10):
-                """Uses Newton's method to find superstable r with safety fallbacks."""
+            def get_superstable_r(n_periods, initial_guess, max_iter=30, tol=1e-12):
+                """Uses Newton's method to find the exact superstable r parameter for period 2^n."""
                 r = initial_guess
-                
                 for _ in range(max_iter):
                     x = 0.5
                     dx_dr = 0.0
                     
-                    # Iterate to find the orbit and the derivative with respect to r
+                    # Track the orbit sequence and its derivative relative to r
                     for _ in range(2**n_periods):
                         dx_dr = x * (1 - x) + r * (1 - 2 * x) * dx_dr
                         x = r * x * (1 - x)
                     
-                    # SAFEGUARD 1: Prevent divide by zero if derivative collapses
                     if abs(dx_dr) < 1e-12:
                         break
-                        
                     step = (x - 0.5) / dx_dr
                     r -= step
-                    
-                    # Early stopping if convergence tolerance is reached
                     if abs(step) < tol:
                         break
-                        
                 return r
 
-            # Base values for periods 2^0, 2^1, 2^2
-            mus = [3.0, 3.44948974, 3.54409036] 
+            # Seed the array with the true first two superstable points:
+            # Period 2^0 (1): r = 2.0
+            # Period 2^1 (2): r = 1 + sqrt(5) ~ 3.236068
+            r_stable = [2.0, 1.0 + np.sqrt(5)]
             
-            # Dynamically calculate up to period 2^6
-            for i in range(3, 7):
-                guess = mus[-1] + (mus[-1] - mus[-2]) / 4.669
-                mus.append(get_bifurcation_parameter(i, guess))
+            # Dynamically discover the higher period superstable values up to period 32 (2^5)
+            # Using precise localized guesses to guide the solver safely
+            guesses = [3.49, 3.55, 3.565, 3.569]
+            for i in range(2, 6):
+                r_val = get_superstable_r(i, guesses[i-2])
+                r_stable.append(r_val)
 
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("**Bifurcation Parameters (mu_n):**")
-                for i, mu in enumerate(mus):
-                    st.write(f"Period {2**i}: **{mu:.6f}**")
+                st.markdown("**Superstable Parameters (r_n):**")
+                for i, r_val in enumerate(r_stable):
+                    st.write(f"Period {2**i}: **{r_val:.6f}**")
                     
             with col2:
-                st.markdown("**Delta Approximation:**")
-                for i in range(2, len(mus) - 1):
-                    numerator = mus[i] - mus[i-1]
-                    denominator = mus[i+1] - mus[i]
+                st.markdown("**Delta Approximation (delta):**")
+                for i in range(1, len(r_stable) - 1):
+                    numerator = r_stable[i] - r_stable[i-1]
+                    denominator = r_stable[i+1] - r_stable[i]
                     
-                    # SAFEGUARD 2: Prevent divide by zero if float precision limits are hit
                     if abs(denominator) < 1e-12:
-                         st.write(f"n={i}: **N/A (Precision limit)**")
+                        st.write(f"n={i}: **N/A (Precision limit)**")
                     else:
                         delta = numerator / denominator
                         st.write(f"n={i}: **{delta:.6f}**")
-
 with tab2:
     st.title("Tent Map")
     st.write("x(n+1) = r * min(x(n), 1 - x(n))")
