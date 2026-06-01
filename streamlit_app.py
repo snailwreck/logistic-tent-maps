@@ -22,7 +22,7 @@ with tab1:
 
 
     # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
-    st.header(f"System Graph & Cobweb Plot (r = {r_val})")
+    st.header(f"Dynamical System Plot (r = {r_val})")
     st.write("Visualizes the mapping function against the identity line y = x to show state transitions.")
 
     def generate_cobweb_plot(r, steps):
@@ -115,26 +115,44 @@ with tab1:
         st.pyplot(fig)
 
 
-    # --- 4. FEIGENBAUM CONSTANT ---
+# --- 4. FEIGENBAUM CONSTANT ---
     st.markdown("---")
-    st.header("Feigenbaum Constant (delta)")
+    st.header("Feigenbaum Constant")
     st.write("Calculates the ratio of successive period-doubling bifurcation intervals.")
 
     if st.button("Calculate Feigenbaum Constant"):
         with st.spinner("Calculating superstable bifurcation parameters..."):
             
-            def get_bifurcation_parameter(n_periods, initial_guess):
+            def get_bifurcation_parameter(n_periods, initial_guess, max_iter=20, tol=1e-10):
+                """Uses Newton's method to find superstable r with safety fallbacks."""
                 r = initial_guess
-                for _ in range(5):
+                
+                for _ in range(max_iter):
                     x = 0.5
-                    dx_dr = 0
+                    dx_dr = 0.0
+                    
+                    # Iterate to find the orbit and the derivative with respect to r
                     for _ in range(2**n_periods):
                         dx_dr = x * (1 - x) + r * (1 - 2 * x) * dx_dr
                         x = r * x * (1 - x)
-                    r -= (x - 0.5) / dx_dr
+                    
+                    # SAFEGUARD 1: Prevent divide by zero if derivative collapses
+                    if abs(dx_dr) < 1e-12:
+                        break
+                        
+                    step = (x - 0.5) / dx_dr
+                    r -= step
+                    
+                    # Early stopping if convergence tolerance is reached
+                    if abs(step) < tol:
+                        break
+                        
                 return r
 
+            # Base values for periods 2^0, 2^1, 2^2
             mus = [3.0, 3.44948974, 3.54409036] 
+            
+            # Dynamically calculate up to period 2^6
             for i in range(3, 7):
                 guess = mus[-1] + (mus[-1] - mus[-2]) / 4.669
                 mus.append(get_bifurcation_parameter(i, guess))
@@ -149,5 +167,12 @@ with tab1:
             with col2:
                 st.markdown("**Delta Approximation:**")
                 for i in range(2, len(mus) - 1):
-                    delta = (mus[i] - mus[i-1]) / (mus[i+1] - mus[i])
-                    st.write(f"n={i}: **{delta:.6f}**")
+                    numerator = mus[i] - mus[i-1]
+                    denominator = mus[i+1] - mus[i]
+                    
+                    # SAFEGUARD 2: Prevent divide by zero if float precision limits are hit
+                    if abs(denominator) < 1e-12:
+                         st.write(f"n={i}: **N/A (Precision limit)**")
+                    else:
+                        delta = numerator / denominator
+                        st.write(f"n={i}: **{delta:.6f}**")
