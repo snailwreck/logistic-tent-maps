@@ -23,8 +23,6 @@ with tab1:
     r_val = st.sidebar.slider("Select r for Time Series", 2.5, 4.0, 3.5)
     n_time_steps = st.sidebar.number_input("Time steps", value=100)
 
-
-    # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
     st.header(f"Dynamical System Plot (r = {r_gph})")
     
     def generate_cobweb_plot(r, steps):
@@ -60,8 +58,6 @@ with tab1:
         fig_cobweb = generate_cobweb_plot(r_gph, n_time_steps)
         st.pyplot(fig_cobweb)
 
-
-    # --- 2. BIFURCATION DIAGRAM ---
     st.markdown("---")
     st.header("Bifurcation Diagram")
 
@@ -92,8 +88,6 @@ with tab1:
             
             st.pyplot(fig)
 
-
-    # --- 3. TIME SERIES ANALYSIS ---
     st.markdown("---")
     st.header(f"Time Series Analysis (r = {r_val})")
 
@@ -117,8 +111,6 @@ with tab1:
         
         st.pyplot(fig)
 
-
-# --- 4. FEIGENBAUM CONSTANT ---
     st.markdown("---")
     st.header("Feigenbaum Constant")
 
@@ -196,8 +188,6 @@ with tab2:
     t_r_val = st.sidebar.slider("Select r for the time series", 0.0, 2.0, 1.5, key="t_r_val")
     t_n_steps = st.sidebar.number_input("Time steps", value=100, key="t_n_steps")
 
-
-    # --- 1. DYNAMICAL SYSTEM GRAPH (Cobweb Plot) ---
     st.header(f"Dynamical System Plot (r = {t_r_gph})")
 
     def generate_tent_cobweb(r, steps):
@@ -230,8 +220,6 @@ with tab2:
     if st.button("Generate Tent Graph", key="t_btn_gph"):
         st.pyplot(generate_tent_cobweb(t_r_gph, t_n_steps))
 
-
-    # --- 2. BIFURCATION DIAGRAM ---
     st.markdown("---")
     st.header("Bifurcation Diagram")
 
@@ -262,8 +250,6 @@ with tab2:
             
             st.pyplot(fig)
 
-
-    # --- 3. TIME SERIES ANALYSIS ---
     st.markdown("---")
     st.header(f"Time Series Analysis (r = {t_r_val})")
 
