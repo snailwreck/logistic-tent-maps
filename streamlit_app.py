@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-tab1, tab2 = st.tabs(["Logistic Map", "Tent Map"])
+tab1, tab2, tab3 = st.tabs(["Logistic Map", "Tent Map", "Asymmetric Logistic Map"])
 
 with tab1:
     st.title("Logistic Map")
@@ -10,6 +10,7 @@ with tab1:
 
     st.sidebar.header("Logistic Map: Graph Parameters") 
     r_gph = st.sidebar.slider("Select r for Graph", 2.5, 4.0, 3.5)
+    l_gph_iterations = st.sidebar.number_input("Iterations", value=50, min_value=1, max_value=500)
     
     st.sidebar.markdown("---")
     st.sidebar.header("Logistic Map: Bifurcation Parameters")
@@ -55,8 +56,31 @@ with tab1:
         return fig
 
     if st.button("Generate Logistic Graph"):
-        fig_cobweb = generate_cobweb_plot(r_gph, n_time_steps)
+        fig_cobweb = generate_cobweb_plot(r_gph, l_gph_iterations)
         st.pyplot(fig_cobweb)
+
+    st.markdown("---")
+    st.header(f"Time Series Analysis (r = {r_val})")
+
+    def generate_time_series(r, steps):
+        x = 0.5
+        series = []
+        for _ in range(steps):
+            x = r * x * (1 - x)
+            series.append(x)
+        return series
+
+    if st.button("Show Logistic Time Series"):
+        data = generate_time_series(r_val, n_time_steps)
+        
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(data, marker='o', linestyle='-', markersize=4, color='b')
+        ax.set_title(f"Time Series for r = {r_val}")
+        ax.set_xlabel("n")
+        ax.set_ylabel("x_n")
+        ax.grid(True, alpha=0.3)
+        
+        st.pyplot(fig)
 
     st.markdown("---")
     st.header("Bifurcation Diagram")
@@ -87,29 +111,6 @@ with tab1:
             ax.set_title("Bifurcation Diagram of the Logistic Map")
             
             st.pyplot(fig)
-
-    st.markdown("---")
-    st.header(f"Time Series Analysis (r = {r_val})")
-
-    def generate_time_series(r, steps):
-        x = 0.5
-        series = []
-        for _ in range(steps):
-            x = r * x * (1 - x)
-            series.append(x)
-        return series
-
-    if st.button("Show Logistic Time Series"):
-        data = generate_time_series(r_val, n_time_steps)
-        
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(data, marker='o', linestyle='-', markersize=4, color='b')
-        ax.set_title(f"Time Series for r = {r_val}")
-        ax.set_xlabel("n")
-        ax.set_ylabel("x_n")
-        ax.grid(True, alpha=0.3)
-        
-        st.pyplot(fig)
 
     st.markdown("---")
     st.header("Feigenbaum Constant")
@@ -175,6 +176,7 @@ with tab2:
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Graph Paramters")
     t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_gph")
+    t_gph_iterations = st.sidebar.number_input("Iterations", value=50, min_value=1, max_value=500)
 
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Bifurcation Paramters")
@@ -218,8 +220,31 @@ with tab2:
         return fig
     
     if st.button("Generate Tent Graph", key="t_btn_gph"):
-        st.pyplot(generate_tent_cobweb(t_r_gph, t_n_steps))
+        st.pyplot(generate_tent_cobweb(t_r_gph, t_gph_iterations))
 
+    st.markdown("---")
+    st.header(f"Time Series Analysis (r = {t_r_val})")
+
+    def generate_tent_time_series(r, steps):
+        x = 0.33
+        series = []
+        for _ in range(steps):
+            x = r * min(x, 1 - x)
+            series.append(x)
+        return series
+
+    if st.button("Show Tent Time Series", key="t_btn_ts"):
+        data = generate_tent_time_series(t_r_val, t_n_steps)
+        
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(data, marker='o', linestyle='-', markersize=4, color='orange')
+        ax.set_title(f"Tent Map Time Series for r = {t_r_val}")
+        ax.set_xlabel("n")
+        ax.set_ylabel("x_n")
+        ax.grid(True, alpha=0.3)
+        
+        st.pyplot(fig)
+    
     st.markdown("---")
     st.header("Bifurcation Diagram")
 
@@ -250,25 +275,4 @@ with tab2:
             
             st.pyplot(fig)
 
-    st.markdown("---")
-    st.header(f"Time Series Analysis (r = {t_r_val})")
-
-    def generate_tent_time_series(r, steps):
-        x = 0.33
-        series = []
-        for _ in range(steps):
-            x = r * min(x, 1 - x)
-            series.append(x)
-        return series
-
-    if st.button("Show Tent Time Series", key="t_btn_ts"):
-        data = generate_tent_time_series(t_r_val, t_n_steps)
-        
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(data, marker='o', linestyle='-', markersize=4, color='orange')
-        ax.set_title(f"Tent Map Time Series for r = {t_r_val}")
-        ax.set_xlabel("n")
-        ax.set_ylabel("x_n")
-        ax.grid(True, alpha=0.3)
-        
-        st.pyplot(fig)
+with tab3:
