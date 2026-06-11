@@ -281,7 +281,7 @@ with tab3:
         ax.plot(x_vals, r * x_vals * (a - x_vals), 'r', label=f"f(x) = r*x({a}-x)")
         ax.plot(x_vals, x_vals, 'k--', label="y = x")
         
-        x_current = 0.5
+        x_current = a
         visual_steps = min(steps, 50) 
         
         for _ in range(visual_steps):
@@ -292,7 +292,7 @@ with tab3:
             
         ax.set_xlabel("x_n")
         ax.set_ylabel("x_(n+1)")
-        ax.set_xlim(0, 1)
+        ax.set_xlim(0, 2)
         ax.set_ylim(0, 2)
         ax.legend(loc="upper left")
         ax.grid(True, alpha=0.2)
