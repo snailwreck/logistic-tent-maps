@@ -276,7 +276,7 @@ with tab3:
     # Renamed functions to avoid namespace clashing
     def generate_asym_cobweb_plot(r, a, steps):
         fig, ax = plt.subplots(figsize=(6, 6))
-        x_vals = np.linspace(0, 2, 500)
+        x_vals = np.linspace(0, 1, 500)
         
         ax.plot(x_vals, r * x_vals * (a - x_vals), 'r', label=f"f(x) = r*x({a}-x)")
         ax.plot(x_vals, x_vals, 'k--', label="y = x")
@@ -292,8 +292,8 @@ with tab3:
             
         ax.set_xlabel("x_n")
         ax.set_ylabel("x_(n+1)")
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
+        ax.set_xlim(0, 2)
+        ax.set_ylim(0, 2)
         ax.legend(loc="upper left")
         ax.grid(True, alpha=0.2)
         return fig
