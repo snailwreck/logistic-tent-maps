@@ -176,7 +176,7 @@ with tab2:
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Graph Paramters")
     t_r_gph = st.sidebar.slider("Select r for the graph", 0.0, 2.0, 1.5, key="t_r_gph")
-    t_gph_iterations = st.sidebar.number_input("Iterations", value=50, min_value=1, max_value=500)
+    t_gph_iterations = st.sidebar.number_input("Iterations", value=50, min_value=1, max_value=500, key="t_gph_iters")
 
     st.sidebar.markdown("---")
     st.sidebar.header("Tent Map: Bifurcation Paramters")
