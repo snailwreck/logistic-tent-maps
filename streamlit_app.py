@@ -276,3 +276,78 @@ with tab2:
             st.pyplot(fig)
 
 with tab3:
+    st.title("Asymmetric Piecewise Logistic Map")
+    st.write("f(x) = (r / a) * x(1-x) if x <= a, else (r / (1-a)) * x(1-x)")
+
+    # --- SIDEBAR CONFIGURATION ---
+    st.sidebar.markdown("---")
+    st.sidebar.header("Piecewise Asymmetric: Parameters")
+    asym_r = st.sidebar.slider("r (Growth)", 0.0, 4.0, 2.5, key="pw_r")
+    asym_a = st.sidebar.slider("a (Peak Location)", 0.1, 0.9, 0.3, key="pw_a")
+    pw_gph_iterations = st.sidebar.number_input("Cobweb Iterations", value=50, min_value=1, max_value=500, key="pw_gph_iters")
+    
+    # --- COBWEB PLOT ---
+    st.header(f"Dynamical System (r={asym_r}, a={asym_a})")
+    
+    def generate_pw_cobweb(r, a, steps):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        x_vals = np.linspace(0, 1, 500)
+        
+        # Piecewise asymmetric function definition
+        f_x = np.where(x_vals <= a, 
+                       (r / a) * x_vals * (1 - x_vals), 
+                       (r / (1 - a)) * x_vals * (1 - x_vals))
+        
+        ax.plot(x_vals, f_x, 'purple', label="Piecewise f(x)")
+        ax.plot(x_vals, x_vals, 'k--', label="y = x")
+        
+        # Draw a subtle vertical line to highlight where the peak splits
+        ax.axvline(x=a, color='gray', linestyle=':', alpha=0.5, label=f"Peak threshold (a={a})")
+        
+        x_current = 0.5
+        visual_steps = min(steps, 200) 
+        
+        for _ in range(visual_steps):
+            # Compute next step based on which side of 'a' the current x resides
+            if x_current <= a:
+                y_next = (r / a) * x_current * (1 - x_current)
+            else:
+                y_next = (r / (1 - a)) * x_current * (1 - x_current)
+                
+            ax.plot([x_current, x_current], [x_current, y_next], 'g', alpha=0.5, lw=1)
+            ax.plot([x_current, y_next], [y_next, y_next], 'g', alpha=0.5, lw=1)
+            x_current = y_next
+            
+        ax.set_xlabel("x_n")
+        ax.set_ylabel("x_(n+1)")
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.legend(loc="upper left")
+        ax.grid(True, alpha=0.2)
+        return fig
+
+    if st.button("Generate Asymmetric Graph", key="pw_btn"):
+        st.pyplot(generate_pw_cobweb(asym_r, asym_a, pw_gph_iterations))
+
+    # --- TIME SERIES ---
+    st.markdown("---")
+    st.header("Time Series Analysis")
+    pw_steps = st.number_input("Time steps", value=100, key="pw_steps")
+
+    if st.button("Show Time Series", key="pw_ts_btn"):
+        x = 0.5
+        series = []
+        for _ in range(pw_steps):
+            if x <= asym_a:
+                x = (asym_r / asym_a) * x * (1 - x)
+            else:
+                x = (asym_r / (1 - asym_a)) * x * (1 - x)
+            series.append(x)
+            
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(series, marker='o', linestyle='-', markersize=4, color='purple')
+        ax.set_title(f"Piecewise Asymmetric Time Series (r={asym_r}, a={asym_a})")
+        ax.set_xlabel("n")
+        ax.set_ylabel("x_n")
+        ax.grid(True, alpha=0.3)
+        st.pyplot(fig)
