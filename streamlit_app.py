@@ -292,7 +292,7 @@ with tab3:
             
         ax.set_xlabel("x_n")
         ax.set_ylabel("x_(n+1)")
-        ax.set_xlim(0, 2)
+        ax.set_xlim(0, 1)
         ax.set_ylim(0, 2)
         ax.legend(loc="upper left")
         ax.grid(True, alpha=0.2)
