@@ -379,7 +379,7 @@ with tab3:
             with col1:
                 st.markdown("**Period Doublings:**")
                 for i, r_val_stable in enumerate(r_stable):
-                    st.write(f"{2**i} periods: r=**{r_val_stable:.6f}**")
+                    st.write(f"{2**i} periods: **r = {r_val_stable:.6f}**")
             with col2:
                 st.markdown("**Delta Approximation (delta):**")
                 for i in range(1, len(r_stable) - 1):
