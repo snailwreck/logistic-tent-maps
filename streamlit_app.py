@@ -281,7 +281,7 @@ with tab3:
         ax.plot(x_vals, r * x_vals * (a - x_vals), 'r', label=f"f(x) = r*x({a}-x)")
         ax.plot(x_vals, x_vals, 'k--', label="y = x")
         
-        x_current = a
+        x_current = a / 2.0
         visual_steps = min(steps, 50) 
         
         for _ in range(visual_steps):
